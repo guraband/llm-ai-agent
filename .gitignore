@@ -11,3 +11,6 @@ wheels/
 chapter04/doc/*
 chapter04/output/*
 uv.lock
+chapter05/mp3/*
+chapter05/output/*
+.cursorrules
