@@ -20,13 +20,10 @@ uv pip install -r requirements.txt
 
 ```bash
 # 가상환경 생성 (예시: .venv 폴더에 생성)
-python -m venv .venv
-
-# (macOS/Linux)
 source .venv/bin/activate
-
-# (Windows)
-.venv\Scripts\activate
 ```
 
 가상환경이 활성화된 상태에서 위의 uv 명령어를 실행하세요.
+
+### 3. 예제 소스
+- [github](https://github.com/saintdragon2/gpt_agent_2025_easyspub)
