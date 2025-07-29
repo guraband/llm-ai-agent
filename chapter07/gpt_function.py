@@ -36,7 +36,7 @@ def get_current_time(timezone: str = DEFAULT_TIMEZONE) -> str:
         logger.info(f"타임존 요청: {timezone}")
 
         # 타임존 유효성 검사
-        if timezone not in pytz.all_timezones:
+        if timezone not in pytz.all_timezones_set:
             available_timezones = [
                 "Asia/Seoul", "US/Eastern", "US/Pacific", "Europe/London", "UTC"]
             raise ValueError(
