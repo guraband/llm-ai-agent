@@ -118,7 +118,8 @@ def get_yf_stock_history(ticker: str, period: str = "1d") -> str:
         if not ticker or not isinstance(ticker, str):
             raise ValueError("유효한 종목 코드를 입력해주세요.")
 
-        valid_periods = ["1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max"]
+        valid_periods = ["1d", "5d", "1mo", "3mo",
+                         "6mo", "1y", "2y", "5y", "10y", "ytd", "max"]
         if period not in valid_periods:
             valid_str = ", ".join(valid_periods)
             raise ValueError(f"유효하지 않은 기간: {period}. 사용 가능한 기간: {valid_str}")
@@ -132,15 +133,15 @@ def get_yf_stock_history(ticker: str, period: str = "1d") -> str:
 
         # 데이터를 마크다운 형태로 변환
         history_md = history.to_markdown()
-        
+
         logger.info(f"주식 히스토리 조회 완료: {ticker}")
         return history_md
 
     except Exception as e:
-        error_msg = f"주식 히스토리 조회 중 오류 발생 (종목: {ticker}, 기간: {period}): {str(e)}"
+        error_msg = f"주식 히스토리 조회 중 오류 발생 (종목: {ticker}, 기간: {
+            period}): {str(e)}"
         logger.error(error_msg)
         return f"ERROR: {error_msg}"
-
 
 
 def get_yf_stock_recommendations(ticker: str) -> str:
@@ -172,7 +173,7 @@ def get_yf_stock_recommendations(ticker: str) -> str:
 
         # 데이터를 마크다운 형태로 변환
         recommendations_md = recommendations.to_markdown()
-        
+
         logger.info(f"주식 추천 정보 조회 완료: {ticker}")
         return recommendations_md
 
@@ -180,6 +181,7 @@ def get_yf_stock_recommendations(ticker: str) -> str:
         error_msg = f"주식 추천 정보 조회 중 오류 발생 (종목: {ticker}): {str(e)}"
         logger.error(error_msg)
         return f"ERROR: {error_msg}"
+
 
 def extract_key_stock_info(info: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -361,7 +363,7 @@ def main() -> None:
 
     # 주식 추천 정보 조회 테스트
     print("5. 주식 추천 정보 조회 테스트:")
-    print(f"AAPL 추천 정보:\n{get_yf_stock_recommendations('AAPL')}")
+    print(f"TSLA 추천 정보:\n{get_yf_stock_recommendations('TSLA')}")
 
 
 if __name__ == "__main__":
