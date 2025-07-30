@@ -121,8 +121,8 @@ def get_yf_stock_history(ticker: str, period: str = "1d") -> str:
         valid_periods = ["1d", "5d", "1mo", "3mo",
                          "6mo", "1y", "2y", "5y", "10y", "ytd", "max"]
         if period not in valid_periods:
-            valid_str = ", ".join(valid_periods)
-            raise ValueError(f"유효하지 않은 기간: {period}. 사용 가능한 기간: {valid_str}")
+            raise ValueError(f"유효하지 않은 기간: {period}. 사용 가능한 기간: {
+                             ', '.join(valid_periods)}")
 
         ticker_obj = yf.Ticker(ticker.upper())
         history = ticker_obj.history(period=period)
@@ -363,7 +363,7 @@ def main() -> None:
 
     # 주식 추천 정보 조회 테스트
     print("5. 주식 추천 정보 조회 테스트:")
-    print(f"TSLA 추천 정보:\n{get_yf_stock_recommendations('TSLA')}")
+    print(f"AAPL 추천 정보:\n{get_yf_stock_recommendations('AAPL')}")
 
 
 if __name__ == "__main__":
