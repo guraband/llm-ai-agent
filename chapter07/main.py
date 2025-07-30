@@ -5,6 +5,7 @@ import os
 import json
 import streamlit as st
 from typing import List, Dict, Any, Optional
+from collections import defaultdict
 
 # 상수 정의
 DEFAULT_MODEL = "gpt-4o-mini"
@@ -16,16 +17,44 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("STUDY_OPENAI_API_KEY"))
 
 
-def get_ai_response(messages: List[Dict[str, str]], tools: Optional[List] = None) -> Any:
+def tool_list_to_tool_obj(tools):
+    tool_calls_dict = defaultdict(lambda: {"id": None, "function": {
+                                  "arguments": "", "name": None}, "type": None})
+
+    for tool_call in tools:
+        if tool_call.id is not None:
+            tool_calls_dict[tool_call.index]["id"] = tool_call.id
+
+        if tool_call.function.name is not None:
+            tool_calls_dict[tool_call.index]["function"]["name"] = tool_call.function.name
+
+        tool_calls_dict[tool_call.index]["function"]["arguments"] += tool_call.function.arguments
+
+        if tool_call.type is not None:
+            tool_calls_dict[tool_call.index]["type"] = tool_call.type
+
+    tool_calls_list = list(tool_calls_dict.values())
+    return {"tool_calls": tool_calls_list}
+
+
+def get_ai_response(messages: List[Dict[str, str]],
+                    tools: Optional[List] = None,
+                    stream: bool = True) -> Any:
     """AI 응답을 가져오는 함수"""
     try:
         print("\n# messages : ", messages)
         response = client.chat.completions.create(
             model=DEFAULT_MODEL,
+            stream=stream,
             messages=messages,
             tools=tools,
         )
-        return response
+
+        if stream:
+            for chunk in response:
+                yield chunk
+        else:
+            return response
     except Exception as e:
         print(f"AI 응답 생성 중 오류: {e}")
         return None
@@ -49,19 +78,18 @@ def execute_function_call(tool_name: str, args: Dict[str, Any]) -> str:
         return f"함수 실행 중 오류가 발생했습니다: {str(e)}"
 
 
-def process_tool_calls(ai_message: Any, messages: List[Dict[str, str]]) -> None:
+def process_tool_calls(tool_calls: Any, messages: List[Dict[str, str]]) -> None:
     """Tool calls 처리 함수"""
-    tool_calls = ai_message.tool_calls
     if not tool_calls:
         return
 
     for tool_call in tool_calls:
-        tool_name = tool_call.function.name
-        tool_call_id = tool_call.id
+        tool_name = tool_call["function"]["name"]
+        tool_call_id = tool_call["id"]
 
         try:
-            args = json.loads(tool_call.function.arguments)
-            function_response = execute_function_call(tool_name, args)
+            arguments = json.loads(tool_call["function"]["arguments"])
+            function_response = execute_function_call(tool_name, arguments)
 
             messages.append({
                 "role": "function",
@@ -83,31 +111,63 @@ def handle_ai_response(messages: List[Dict[str, str]]) -> None:
     """AI 응답 처리 함수"""
     ai_response = get_ai_response(messages, tools=tools)
 
+    content = ""
+    tool_calls = None
+    tool_calls_chunk = []
+
+    with st.chat_message("assistant").empty():
+        for chunk in ai_response:
+            content_chunk = chunk.choices[0].delta.content
+            if content_chunk:
+                print(content_chunk, end="")
+                content += content_chunk
+                st.markdown(content)
+
+            if chunk.choices[0].delta.tool_calls:
+                tool_calls_chunk += chunk.choices[0].delta.tool_calls
+
+        tool_obj = tool_list_to_tool_obj(tool_calls_chunk)
+        tool_calls = tool_obj["tool_calls"]
+
+        if len(tool_calls) > 0:
+            tool_call_msg = [tool_call["function"] for tool_call in tool_calls]
+            st.write(tool_call_msg)
+
     if not ai_response:
         display_error_message(messages)
         return
 
     print(ai_response)
-    ai_message = ai_response.choices[0].message
+    # ai_message = ai_response.choices[0].message
+
+    print(tool_calls)
 
     # Tool calls 처리
-    if ai_message.tool_calls:
-        process_tool_calls(ai_message, messages)
+    if tool_calls:
+        process_tool_calls(tool_calls, messages)
 
         # Function 결과를 바탕으로 다시 응답 생성
         messages.append({"role": "system", "content": FUNCTION_RESULT_PROMPT})
 
         final_response = get_ai_response(messages, tools=tools)
         if final_response:
-            ai_message = final_response.choices[0].message
+            # ai_message = final_response.choices[0].message
+            content = ""
+            with st.chat_message("assistant").empty():
+                for chunk in final_response:
+                    content_chunk = chunk.choices[0].delta.content
+                    if content_chunk:
+                        print(content_chunk, end="")
+                        content += content_chunk
+                        st.markdown(content)
         else:
             display_error_message(messages)
             return
 
     # 최종 응답 처리
-    if ai_message.content:
-        messages.append({"role": "assistant", "content": ai_message.content})
-        st.chat_message("assistant").write(ai_message.content)
+    if content:
+        messages.append({"role": "assistant", "content": content})
+        # st.chat_message("assistant").write(content)
     else:
         display_error_message(messages)
 

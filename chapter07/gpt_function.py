@@ -103,7 +103,7 @@ def get_yf_stock_history(ticker: str, period: str = "1d") -> str:
 
     Args:
         ticker (str): 종목 코드 (예: AAPL, GOOGL, SCHD)
-        period (str): 조회 기간 (예: 1d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max)
+        period (str): 조회 기간 (예: 1d, 1wk, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max)
 
     Returns:
         str: 마크다운 형태의 주식 히스토리 데이터 문자열
@@ -118,11 +118,11 @@ def get_yf_stock_history(ticker: str, period: str = "1d") -> str:
         if not ticker or not isinstance(ticker, str):
             raise ValueError("유효한 종목 코드를 입력해주세요.")
 
-        valid_periods = ["1d", "5d", "1mo", "3mo",
-                         "6mo", "1y", "2y", "5y", "10y", "ytd", "max"]
-        if period not in valid_periods:
-            valid_str = ", ".join(valid_periods)
-            raise ValueError(f"유효하지 않은 기간: {period}. 사용 가능한 기간: {valid_str}")
+        # valid_periods = ["1d", "5d", "1mo", "3mo",
+        #                  "6mo", "1y", "2y", "5y", "10y", "ytd", "max"]
+        # if period not in valid_periods:
+        #     valid_str = ", ".join(valid_periods)
+        #     raise ValueError(f"유효하지 않은 기간: {period}. 사용 가능한 기간: {valid_str}")
 
         ticker_obj = yf.Ticker(ticker.upper())
         history = ticker_obj.history(period=period)
@@ -301,7 +301,7 @@ def get_tools() -> List[Dict[str, Any]]:
                 },
                 "period": {
                     "type": "string",
-                    "description": "조회할 기간. 예시: 1d (1일), 1mo (1개월), 3mo (3개월), 6mo (6개월), 1y (1년), 2y (2년), 5y (5년), 10y (10년), ytd (올해 주식 시작 이후), max (최대 기간)",
+                    "description": "조회할 기간. 예시: 1d (1일), 1wk (1주), 1mo (1개월), 3mo (3개월), 6mo (6개월), 1y (1년), 2y (2년), 5y (5년), 10y (10년), ytd (올해 주식 시작 이후), max (최대 기간)",
                     "default": "1d"
                 }
             },
