@@ -1,4 +1,4 @@
-from gpt_function import get_current_time, tools, get_yf_stock_info
+from gpt_function import get_current_time, tools, get_yf_stock_info, get_yf_stock_history, get_yf_stock_recommendations
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -38,6 +38,10 @@ def execute_function_call(tool_name: str, args: Dict[str, Any]) -> str:
             return get_current_time(timezone=args["timezone"])
         elif tool_name == "get_yf_stock_info":
             return get_yf_stock_info(args["ticker"])
+        elif tool_name == "get_yf_stock_history":
+            return get_yf_stock_history(args["ticker"], args["period"])
+        elif tool_name == "get_yf_stock_recommendations":
+            return get_yf_stock_recommendations(args["ticker"])
         else:
             return f"알 수 없는 함수: {tool_name}"
     except Exception as e:
