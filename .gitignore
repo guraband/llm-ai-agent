@@ -14,3 +14,5 @@ uv.lock
 chapter05/mp3/*
 chapter05/output/*
 .cursorrules
+chapter09/chroma_store/*
+chapter09/data/*
