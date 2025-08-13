@@ -7,8 +7,10 @@ import retriever
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1)
 
 
-def get_ai_response(messages):
-    response = llm.stream(messages)
+def get_ai_response(messages, docs):
+    response = retriever.document_chain.stream(
+        {"context": docs, "messages": messages}
+    )
 
     for chunk in response:
         yield chunk
@@ -42,7 +44,20 @@ if prompt := st.chat_input():
 
     print("augmented_query\t:", augmented_query)
 
+    print("관련 문서 검색 중...")
+    docs = retriever.retriever.invoke(f"{prompt}\n{augmented_query}")
+
+    for doc in docs:
+        print("-"*50)
+        print(doc)
+
+        with st.expander(f"**문서:**{doc.metadata.get('source', '문서 정보 없음')}"):
+            st.write(f"**page:**{doc.metadata.get('page', '')}")
+            st.write(doc.page_content)
+
+    print("="*70)
+
     with st.spinner(f"AI가 답변을 준비 중입니다... '{augmented_query}'"):
-        response = get_ai_response(st.session_state["messages"])
+        response = get_ai_response(st.session_state["messages"], docs)
         result = st.chat_message("assistant").write_stream(response)
     st.session_state["messages"].append(AIMessage(result))
