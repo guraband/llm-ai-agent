@@ -731,6 +731,7 @@ dependencies = [
     { name = "langchain-openai" },
     { name = "streamlit" },
     { name = "tabulate" },
+    { name = "tavily-python" },
     { name = "yfinance" },
 ]
 
@@ -742,6 +743,7 @@ requires-dist = [
     { name = "langchain-openai", specifier = ">=0.3.31" },
     { name = "streamlit", specifier = ">=1.47.1" },
     { name = "tabulate", specifier = ">=0.9.0" },
+    { name = "tavily-python", specifier = ">=0.7.11" },
     { name = "yfinance", specifier = ">=0.2.65" },
 ]
 
@@ -1732,6 +1734,20 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ec/fe/802052aecb21e3797b8f7902564ab6ea0d60ff8ca23952079064155d1ae1/tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c", size = 81090 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/40/44/4a5f08c96eb108af5cb50b41f76142f0afa346dfa99d5296fe7202a11854/tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f", size = 35252 },
+]
+
+[[package]]
+name = "tavily-python"
+version = "0.7.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "requests" },
+    { name = "tiktoken" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bb/a4/2b816cbb287c6417e7997195a2b8ce32200ea2acc7099fba1ddf37d0d051/tavily_python-0.7.11.tar.gz", hash = "sha256:58c3ab71bb62820ade5498acc17bc372f436e88151389912672add6bf6d31aed", size = 19278 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/85/53/371a39e17f02e3df8ab3493c77453b0f8f0d2783bd23d6e0fc879d211217/tavily_python-0.7.11-py3-none-any.whl", hash = "sha256:50559d8b605b6854fd85b1b785c603851b86eb4d0e9fd29154f81b54b734dd6e", size = 15826 },
 ]
 
 [[package]]
