@@ -16,3 +16,5 @@ chapter05/output/*
 .cursorrules
 chapter09/chroma_store/*
 chapter09/data/*
+chroma_store/
+chapter13/data/
