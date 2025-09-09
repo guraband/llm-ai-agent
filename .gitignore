@@ -17,4 +17,5 @@ chapter05/output/*
 chapter09/chroma_store/*
 chapter09/data/*
 chroma_store/
+chroma_store/chroma.sqlite3
 chapter13/data/
